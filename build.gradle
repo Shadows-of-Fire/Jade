@@ -1,5 +1,6 @@
 plugins {
     id 'eclipse'
+    id 'java-library'
     id 'idea'
     id 'maven-publish'
     id "me.shedaniel.unified-publishing" version "0.1.+"
@@ -136,15 +137,27 @@ jar {
     }
 }
 
+java {
+    withSourcesJar()
+}
+
 publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact jar
-        }
-    }
     repositories {
         maven {
-            url "file://${project.projectDir}/mcmodsrepo"
+            name = "shadowsMaven"
+            url = "https://maven.shadowsoffire.dev/releases"
+            credentials(PasswordCredentials)
+            authentication {
+                basic(BasicAuthentication)
+            }
+        }
+    }
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = "${group}"
+            artifactId = "Jade-NeoForge"
+            version = "${minecraft_version}-${mod_version}"
+            from components.java
         }
     }
 }
